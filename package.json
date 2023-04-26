@@ -1,0 +1,10 @@
+{
+  "name": "@waves/signature-adapter",
+  "version": "4.3.0",
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "repository": {
+    "type": "GIT",
+    "url": "https://github.com/wavesplatform/waves-signature-adapter"
+  },
