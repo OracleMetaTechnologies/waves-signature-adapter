@@ -35,3 +35,10 @@
     "typescript": "^3.2.2",
     "uglify-js": "^3.4.7"
   },
+  "jest": {
+    "collectCoverage": true,
+    "testEnvironment": "jest-environment-node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ],
