@@ -21,3 +21,10 @@
       "es5",
       "es2017.object"
     ],
+"baseUrl": "src",
+    "paths": {
+      "app/*": [
+        "./app/*"
+      ]
+    }
+  },
