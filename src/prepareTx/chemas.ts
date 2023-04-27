@@ -171,3 +171,107 @@ const SIGN_SCHEMA = {
         //@ts-ignore
         fieldsType.timestamp('timestamp', null, processors.timestamp),
     ],
+[SIGN_TYPE.DATA]: [
+        fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.data('data')
+    ],
+    [SIGN_TYPE.SET_SCRIPT]: [
+        fieldsType.string('senderPublicKey', null, null, true),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
+        fieldsType.script('script')
+    ],
+    [SIGN_TYPE.SET_ASSET_SCRIPT]: [
+        fieldsType.string('senderPublicKey', null, null, true),
+        fieldsType.asset('assetId'),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toBigNumber),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
+        fieldsType.asset_script('script')
+    ],
+    [SIGN_TYPE.SCRIPT_INVOCATION]: [
+        fieldsType.number('type', null, processors.addValue(() => SIGN_TYPE.SCRIPT_INVOCATION), true),
+        fieldsType.number('version', null, processors.addValue(() => 1), true),
+    
+        fieldsType.string('senderPublicKey', null, null, true),
+        fieldsType.address('dappAddress'),
+        //@ts-ignore
+        fieldsType.call('call', 'call', processors.callFunc, false),
+        //@ts-ignore
+        fieldsType.payment('payment', null, processors.payments, true),
+        //@ts-ignore
+        fieldsType.numberLike('fee', null, processors.toNumberString),
+        //@ts-ignore
+        fieldsType.numberLike('fee', 'assetId', processors.moneyToAssetId),
+        //@ts-ignore
+        fieldsType.timestamp('timestamp', null, processors.timestamp),
+        fieldsType.number('chainId', null, processors.addValue(() => config.getNetworkByte()), true),
+    ]
+};
+
+module schemas {
+
+    export module api {
+
+        export const coinomatConfirmation = schema(
+            wrap('prefix', 'prefix', processors.addValue('Coinomat')),
+            'timestamp'
+        );
+
+        export const createOrder = schema(
+            'matcherPublicKey',
+            'orderType',
+            wrap(null, 'assetPair', processors.assetPair),
+            wrap(null, 'price', processors.toOrderPrice),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('matcherFee', 'matcherFee', processors.toBigNumber),
+            wrap('expiration', 'expiration', processors.expiration),
+            'senderPublicKey',
+            'timestamp',
+            wrap('proofs', 'signature', processors.signatureFromProof)
+        );
+
+        export const createOrder_v2 = schema(
+            'matcherPublicKey',
+            'orderType',
+            wrap(null, 'version', processors.addValue(2)),
+            wrap(null, 'assetPair', processors.assetPair),
+            wrap(null, 'price', processors.toOrderPrice),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('matcherFee', 'matcherFee', processors.toBigNumber),
+            wrap('expiration', 'expiration', processors.expiration),
+            'senderPublicKey',
+            'timestamp',
+            'proofs'
+        );
+
+        export const cancelOrder = schema(
+            wrap('id', 'orderId', processors.noProcess),
+            wrap('senderPublicKey', 'sender', processors.noProcess),
+            wrap('proofs', 'signature', processors.signatureFromProof)
+        );
+
+        export const issue = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.ISSUE)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
+            'senderPublicKey',
+            'name',
+            'description',
+            wrap('quantity', 'quantity', processors.toBigNumber),
+            wrap('precision', 'decimals', processors.noProcess),
+            wrap('reissuable', 'reissuable', processors.noProcess),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.ISSUE)),
+            wrap('script', 'script', processors.scriptProcessor),
+            'proofs'
+        );
