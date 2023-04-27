@@ -355,3 +355,193 @@ module schemas {
             'proofs',
             wrap('type', 'type', processors.addValue(SIGN_TYPE.LEASE))
         );
+        export const cancelLeasing = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.CANCEL_LEASING)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
+            'senderPublicKey',
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            wrap('leaseId', 'leaseId', processors.noProcess),
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.CANCEL_LEASING))
+        );
+
+        export const alias = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.CREATE_ALIAS)),
+            'senderPublicKey',
+            wrap('alias', 'alias', processors.noProcess),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.CREATE_ALIAS))
+        );
+
+        export const massTransfer = schema(
+            'senderPublicKey',
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.MASS_TRANSFER)),
+            wrap('totalAmount', 'assetId', processors.moneyToNodeAssetId),
+            wrap('transfers', 'transfers', processors.transfers(
+                processors.recipient,
+                processors.toBigNumber
+            )),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('attachment', 'attachment', processors.attachment),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.MASS_TRANSFER)),
+            'proofs'
+        );
+
+        export const data = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.DATA)),
+            'senderPublicKey',
+            'data',
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.DATA)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
+
+        export const setScript = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_SCRIPT)),
+            'senderPublicKey',
+            wrap('script', 'script', processors.scriptProcessor),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_SCRIPT)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
+
+        export const sponsorship = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SPONSORSHIP)),
+            'senderPublicKey',
+            wrap('minSponsoredAssetFee', 'assetId', processors.moneyToAssetId),
+            wrap('minSponsoredAssetFee', 'minSponsoredAssetFee', processors.toSponsorshipFee),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SPONSORSHIP)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
+
+        export const setAssetScript = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.SET_ASSET_SCRIPT)),
+            'senderPublicKey',
+            wrap('assetId', 'assetId', processors.noProcess),
+            wrap('script', 'script', processors.scriptProcessor),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SET_ASSET_SCRIPT)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
+    
+        export const scriptInvocation = schema(
+            wrap('version', 'version', processors.addValue(1)),
+            'senderPublicKey',
+            wrap('dappAddress', 'dappAddress', processors.recipient),
+            wrap('feeAssetId', 'feeAssetId', processors.noProcess),
+            wrap('call', 'call', processors.callFunc),
+            wrap('payment', 'payment', processors.paymentsToNode),
+            wrap('chainId', 'chainId', processors.addValue(() => config.get('networkByte'))),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.SCRIPT_INVOCATION)),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs'
+        );
+    }
+
+    export module sign {
+        export const matcherOrders = signSchema(SIGN_SCHEMA[SIGN_TYPE.MATCHER_ORDERS]);
+        export const auth = signSchema(SIGN_SCHEMA[SIGN_TYPE.AUTH]);
+        export const coinomatConfirmation = signSchema(SIGN_SCHEMA[SIGN_TYPE.COINOMAT_CONFIRMATION]);
+        export const createOrder = signSchema(SIGN_SCHEMA[SIGN_TYPE.CREATE_ORDER]);
+        export const cancelOrder = signSchema(SIGN_SCHEMA[SIGN_TYPE.CANCEL_ORDER]);
+        export const issue = signSchema(SIGN_SCHEMA[SIGN_TYPE.ISSUE]);
+        export const transfer = signSchema(SIGN_SCHEMA[SIGN_TYPE.TRANSFER]);
+        export const reissue = signSchema(SIGN_SCHEMA[SIGN_TYPE.REISSUE]);
+        export const burn = signSchema(SIGN_SCHEMA[SIGN_TYPE.BURN]);
+        export const lease = signSchema(SIGN_SCHEMA[SIGN_TYPE.LEASE]);
+        export const cancelLeasing = signSchema(SIGN_SCHEMA[SIGN_TYPE.CANCEL_LEASING]);
+        export const alias = signSchema(SIGN_SCHEMA[SIGN_TYPE.CREATE_ALIAS]);
+        export const massTransfer = signSchema(SIGN_SCHEMA[SIGN_TYPE.MASS_TRANSFER]);
+        export const data = signSchema(SIGN_SCHEMA[SIGN_TYPE.DATA]);
+        export const setScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_SCRIPT]);
+        export const sponsorship = signSchema(SIGN_SCHEMA[SIGN_TYPE.SPONSORSHIP]);
+        export const setAssetScript = signSchema(SIGN_SCHEMA[SIGN_TYPE.SET_ASSET_SCRIPT]);
+        export const exchange = signSchema(SIGN_SCHEMA[SIGN_TYPE.EXCHANGE]);
+        export const scriptInvocation = signSchema(SIGN_SCHEMA[SIGN_TYPE.SCRIPT_INVOCATION]);
+    }
+}
+
+//@ts-ignore
+const hasNoApiMethod = schemaType => () => {
+    throw new Error(`Has no method for prepare ${schemaType}`);
+};
+
+export function getSchemaByType(type: SIGN_TYPE): { sign: Function, api: Record<number, Function> } {
+    switch (type) {
+        case SIGN_TYPE.MATCHER_ORDERS:
+            return {
+                api: {
+                    0: hasNoApiMethod('api, get orders'),
+                    1: hasNoApiMethod('api, get orders')
+                }, sign: schemas.sign.matcherOrders
+            };
+        case SIGN_TYPE.AUTH:
+            return {
+                api: {
+                    0: hasNoApiMethod('api auth'),
+                    1: hasNoApiMethod('api auth')
+                }, sign: schemas.sign.auth
+            };
+        case SIGN_TYPE.COINOMAT_CONFIRMATION:
+            return {
+                api: {
+                    0: schemas.api.coinomatConfirmation,
+                    1: schemas.api.coinomatConfirmation
+                }, sign: schemas.sign.coinomatConfirmation
+            };
+        case SIGN_TYPE.CREATE_ORDER:
+            return {
+                api: {
+                    1: schemas.api.createOrder,
+                    2: schemas.api.createOrder_v2
+                }, sign: schemas.sign.createOrder
+            };
+        case SIGN_TYPE.CANCEL_ORDER:
+            return {
+                api: {
+                    0: schemas.api.cancelOrder,
+                    1: schemas.api.cancelOrder
+                }, sign: schemas.sign.cancelOrder
+            };
+        case SIGN_TYPE.TRANSFER:
+            return { api: { 2: schemas.api.transfer }, sign: schemas.sign.transfer };
+        case SIGN_TYPE.ISSUE:
+            return { api: { 2: schemas.api.issue }, sign: schemas.sign.issue };
+        case SIGN_TYPE.REISSUE:
+            return { api: { 2: schemas.api.reissue }, sign: schemas.sign.reissue };
+        case SIGN_TYPE.BURN:
+            return { api: { 2: schemas.api.burn }, sign: schemas.sign.burn };
+        case SIGN_TYPE.EXCHANGE:
+            return { api: { 1: schemas.api.exchange, 2: schemas.api.exchange_v2 }, sign: schemas.sign.exchange };
+        case SIGN_TYPE.LEASE:
+            return { api: { 2: schemas.api.lease }, sign: schemas.sign.lease };
+        case SIGN_TYPE.CANCEL_LEASING:
+            return { api: { 2: schemas.api.cancelLeasing }, sign: schemas.sign.cancelLeasing };
+        case SIGN_TYPE.CREATE_ALIAS:
+            return { api: { 2: schemas.api.alias }, sign: schemas.sign.alias };
+        case SIGN_TYPE.MASS_TRANSFER:
+            return { api: { 1: schemas.api.massTransfer }, sign: schemas.sign.massTransfer };
+        case SIGN_TYPE.DATA:
+            return { api: { 1: schemas.api.data }, sign: schemas.sign.data };
+        case SIGN_TYPE.SET_SCRIPT:
+            return { api: { 1: schemas.api.setScript }, sign: schemas.sign.setScript };
+        case SIGN_TYPE.SPONSORSHIP:
+            return { api: { 1: schemas.api.sponsorship }, sign: schemas.sign.sponsorship };
+        case SIGN_TYPE.SET_ASSET_SCRIPT:
+            return { api: { 1: schemas.api.setAssetScript }, sign: schemas.sign.setAssetScript };
+        case SIGN_TYPE.SCRIPT_INVOCATION:
+            return { api: { 1: schemas.api.scriptInvocation }, sign: schemas.sign.scriptInvocation };
+    }
+}
