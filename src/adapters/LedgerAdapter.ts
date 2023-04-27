@@ -24,3 +24,20 @@ export class LedgerAdapter extends Adapter {
             throw 'No selected user';
         }
     }
+
+        public isAvailable() {
+        return this._isMyLedger();
+    }
+
+    public getPublicKey() {
+        return Promise.resolve(this._currentUser.publicKey);
+    }
+
+    public getAddress() {
+        return Promise.resolve(this._currentUser.address);
+    }
+
+    public getSeed() {
+        return Promise.reject(Error('Method "getSeed" is not available!'));
+    }
+    
