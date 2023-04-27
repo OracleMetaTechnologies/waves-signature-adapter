@@ -71,3 +71,72 @@ export class LedgerAdapter extends Adapter {
     public getPrivateKey() {
         return Promise.reject('No private key');
     }
+
+       public getSignVersions(): Record<SIGN_TYPE, Array<number>> {
+        return {
+            [SIGN_TYPE.AUTH]: [1],
+            [SIGN_TYPE.MATCHER_ORDERS]: [1],
+            [SIGN_TYPE.CREATE_ORDER]: [1, 2],
+            [SIGN_TYPE.CANCEL_ORDER]: [1],
+            [SIGN_TYPE.COINOMAT_CONFIRMATION]: [1],
+            [SIGN_TYPE.ISSUE]: [2],
+            [SIGN_TYPE.TRANSFER]: [2],
+            [SIGN_TYPE.REISSUE]: [2],
+            [SIGN_TYPE.BURN]: [2],
+            [SIGN_TYPE.EXCHANGE]: [],
+            [SIGN_TYPE.LEASE]: [2],
+            [SIGN_TYPE.CANCEL_LEASING]: [2],
+            [SIGN_TYPE.CREATE_ALIAS]: [2],
+            [SIGN_TYPE.MASS_TRANSFER]: [1],
+            [SIGN_TYPE.DATA]: [1],
+            [SIGN_TYPE.SET_SCRIPT]: [1],
+            [SIGN_TYPE.SPONSORSHIP]: [1],
+            [SIGN_TYPE.SET_ASSET_SCRIPT]: [1],
+            [SIGN_TYPE.SCRIPT_INVOCATION]: [1]
+        };
+    }
+
+    protected _isMyLedger() {
+        return LedgerAdapter._ledger.getUserDataById(this._currentUser.id)
+            //@ts-ignore
+            .then(user => {
+                if (user.address !== this._currentUser.address) {
+                    throw {error: 'Invalid ledger'};
+                }
+            });
+    }
+
+    public static getUserList(from: Number = 1, to: Number = 1) {
+        return LedgerAdapter._ledger.getPaginationUsersData(from, to);
+    }
+
+    public static initOptions(options: IWavesLedger) {
+        Adapter.initOptions(options);
+        this._ledger = new WavesLedger( options );
+    }
+
+    public static isAvailable() {
+        if (!LedgerAdapter._hasConnectionPromise) {
+            LedgerAdapter._hasConnectionPromise = LedgerAdapter._ledger.probeDevice();
+        }
+
+        return LedgerAdapter._hasConnectionPromise.then(() => {
+            LedgerAdapter._hasConnectionPromise = null;
+            return true;
+            //@ts-ignore
+        }, (err) => {
+            LedgerAdapter._hasConnectionPromise = null;
+            return false;
+        });
+    }
+}
+
+interface IWavesLedger  {
+    networkCode: number;
+    debug?: boolean;
+    openTimeout?: number;
+    listenTimeout?: number;
+    exchangeTimeout?: number;
+    //@ts-ignore
+    transport?;
+}
