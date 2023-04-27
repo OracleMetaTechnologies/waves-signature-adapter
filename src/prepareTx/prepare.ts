@@ -156,3 +156,86 @@ export module prepare {
         }
     }
     
+    export function wrap(from: string | null, to: string, cb: any): IWrappedFunction {
+        if (typeof cb != 'function') {
+            //@ts-ignore
+            return { from, to, cb: () => cb };
+        }
+        //@ts-ignore
+        return { from, to, cb };
+    }
+    
+    export interface IWrappedFunction {
+        from: string;
+        to: string;
+        cb: Function;
+    }
+    
+    export function schema(...args: Array<IWrappedFunction | string>) {
+        //@ts-ignore
+        return (data) => args.map((item) => {
+                return typeof item === 'string' ? {
+                    key: item,
+                    value: processors.noProcess(data[item])
+                } : {
+                    key: item.to,
+                    value: item.cb(item.from ? data[item.from] : data)
+                };
+            })
+            .reduce((result, item) => {
+                result[item.key] = item.value;
+                return result;
+            }, Object.create(null));
+    }
+    
+    //@ts-ignore
+    export function signSchema(args: Array<{ name, field, processor, optional, type }>) {
+        //@ts-ignore
+        return (data, validate = false) => {
+            const errors: Array<any> = [];
+            const prepareData = args.map((item) => {
+                    const wrapped = <IWrappedFunction>wrap(item.name, item.field, item.processor || processors.noProcess);
+                    
+                    const validateOptions = {
+                        key: wrapped.to,
+                        value: wrapped.from ? data[wrapped.from] : data,
+                        optional: item.optional,
+                        type: item.type,
+                        name: item.name,
+                    };
+                    //@ts-ignore
+                    const validator = VALIDATORS[validateOptions.type];
+                    try {
+                        if (validate && validator) {
+                            validator(validateOptions);
+                        }
+                        return {
+                            key: validateOptions.key,
+                            value: wrapped.cb(validateOptions.value),
+                        };
+                    } catch (e) {
+                        errors.push(e);
+                    }
+                    
+                    return {
+                        key: validateOptions.key,
+                        value: null,
+                    };
+                })
+                .reduce((result, { key, value }) => {
+                    result[key] = value;
+                    return result;
+                }, Object.create(null));
+            
+            if (errors.length) {
+                throw new Error(JSON.stringify(errors));
+            }
+            
+            return prepareData;
+        };
+    }
+    
+    export function idToNode(id: string): string {
+        return id === WAVES_ID ? '' : id;
+    }
+}
