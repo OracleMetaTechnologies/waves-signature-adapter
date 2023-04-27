@@ -275,3 +275,83 @@ module schemas {
             wrap('script', 'script', processors.scriptProcessor),
             'proofs'
         );
+
+                export const transfer = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.TRANSFER)),
+            wrap('amount', 'assetId', processors.moneyToNodeAssetId),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('fee', 'feeAssetId', processors.moneyToNodeAssetId),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('recipient', 'recipient', processors.recipient),
+            wrap('attachment', 'attachment', processors.attachment),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'senderPublicKey',
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.TRANSFER))
+        );
+
+        export const reissue = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.REISSUE)),
+            'senderPublicKey',
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
+            wrap('assetId', 'assetId', processors.noProcess),
+            wrap('quantity', 'quantity', processors.toBigNumber),
+            wrap('reissuable', 'reissuable', processors.noProcess),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.REISSUE))
+        );
+
+        export const burn = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.BURN)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
+            'senderPublicKey',
+            wrap('assetId', 'assetId', processors.noProcess),
+            wrap('amount', 'quantity', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
+        );
+
+        export const exchange = schema(
+            'senderPublicKey',
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('price', 'price', processors.toBigNumber),
+            wrap('buyMatcherFee', 'buyMatcherFee', processors.toBigNumber),
+            wrap('sellMatcherFee', 'sellMatcherFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'buyOrder',
+            'sellOrder',
+            'signature',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
+        );
+
+        export const exchange_v2 = schema(
+            wrap(null, 'version', processors.addValue(2)),
+            'senderPublicKey',
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('price', 'price', processors.toBigNumber),
+            wrap('buyMatcherFee', 'buyMatcherFee', processors.toBigNumber),
+            wrap('sellMatcherFee', 'sellMatcherFee', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'buyOrder',
+            'sellOrder',
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.BURN))
+        );
+
+        export const lease = schema(
+            wrap('version', 'version', processors.addValue(TRANSACTION_TYPE_VERSION.LEASE)),
+            wrap('chainId', 'chainId', processors.addValue(() => config.getNetworkByte())),
+            'senderPublicKey',
+            wrap('recipient', 'recipient', processors.recipient),
+            wrap('amount', 'amount', processors.toBigNumber),
+            wrap('fee', 'fee', processors.toBigNumber),
+            wrap('timestamp', 'timestamp', processors.timestamp),
+            'proofs',
+            wrap('type', 'type', processors.addValue(SIGN_TYPE.LEASE))
+        );
