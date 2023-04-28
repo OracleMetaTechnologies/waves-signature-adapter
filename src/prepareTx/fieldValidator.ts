@@ -511,3 +511,18 @@ const call = (options: IFieldOptions) => {
         name: 'function'
     };
     
+        string(functionValue);
+    
+    const argsValue = {
+        key: 'call.args',
+        value: value.args,
+        optional: true,
+        type: 'args',
+        name: 'args'
+    };
+    
+    if (argsValue.value) {
+        data(argsValue, true);
+    }
+};
+
