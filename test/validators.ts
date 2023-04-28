@@ -369,3 +369,71 @@ describe('Check validators', () => {
                 expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
             }
         });
+
+                    it('issure invalid description', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, description: {} }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('description');
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+            }
+            
+            const desc = (new Array(1002).join('T'));
+            
+            const signData2 = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, description: desc }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData2);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('description');
+                expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
+            }
+        });
+        
+        it('issure invalid precision', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, precision: -1 }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('precision');
+                expect(e[0].message).toEqual(ERROR_MSG.SMALL_FIELD);
+            }
+            
+            const signData2 = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, precision: '10' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData2);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('precision');
+                expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
+            }
+        });
+    });
+    
