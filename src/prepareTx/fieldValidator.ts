@@ -132,3 +132,19 @@ const boolean = (options: IFieldOptions) => {
         return error(options, ERROR_MSG.WRONG_BOOLEAN);
     }
 };
+
+const money = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (value == null) {
+        return;
+    }
+    
+    switch (true) {
+        case !(value instanceof Money):
+            return error(options, ERROR_MSG.WRONG_TYPE);
+        case value instanceof Money && (<Money>value).getCoins().isNaN():
+            return error(options, ERROR_MSG.WRONG_NUMBER);
+    }
+};
