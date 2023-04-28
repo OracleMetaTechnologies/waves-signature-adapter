@@ -469,3 +469,15 @@ const data = (options: IFieldOptions, noKey?: boolean) => {
         error(options, errors);
     }
 };
+
+const binary = (options: IFieldOptions) => {
+    const { value = '' } = options;
+    
+    if (value && !value.includes('base64:')) {
+        error(options, ERROR_MSG.BASE64);
+    }
+    
+    if (value && !isBase64(value.replace('base64:', ''))) {
+        error(options, ERROR_MSG.BASE64);
+    }
+};
