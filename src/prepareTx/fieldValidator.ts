@@ -73,3 +73,62 @@ const string = (options: IFieldOptions) => {
         return error(options, ERROR_MSG.WRONG_TYPE);
     }
 };
+
+const attachment = (options: IFieldOptions) => {
+    
+    const { value } = options;
+    
+    if (value == null) {
+        return;
+    }
+    
+    if (typeof value === 'string' || typeof value === 'number') {
+        
+        string(options);
+        
+        switch (true) {
+            case typeof value != 'string':
+                error(options, ERROR_MSG.WRONG_TYPE);
+                break;
+            case getBytesFromString(value).length > TRANSFERS.ATTACHMENT:
+                error(options, ERROR_MSG.LARGE_FIELD);
+                break;
+        }
+        
+        return;
+    }
+    
+    if (typeof value === 'object') {
+        
+        switch (true) {
+            case typeof value.length !== 'number' || value.length < 0:
+                error(options, ERROR_MSG.WRONG_TYPE);
+                break;
+            case value.length > TRANSFERS.ATTACHMENT:
+                error(options, ERROR_MSG.LARGE_FIELD);
+                break;
+        }
+        
+        return;
+    }
+    
+    error(options, ERROR_MSG.WRONG_TYPE);
+};
+
+const number = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (value != null && new BigNumber(value).isNaN()) {
+        return error(options, ERROR_MSG.WRONG_NUMBER);
+    }
+};
+
+const boolean = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (value != null && typeof value !== 'boolean') {
+        return error(options, ERROR_MSG.WRONG_BOOLEAN);
+    }
+};
