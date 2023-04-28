@@ -27,3 +27,23 @@ const testAsset = new Asset({
     timestamp: new Date(),
     ticker: undefined
 });
+
+describe('Create data and signature check', () => {
+    
+    describe('invoke_script', () => {
+        let adapter: SeedAdapter;
+    
+        beforeEach(() => {
+            adapter = new SeedAdapter(testSeed);
+        });
+        it ('check', done => {
+            const data = {
+                payment: [Money.fromTokens(1, testAsset)] as [Money],
+                fee: Money.fromTokens(0.0005, testAsset),
+                dappAddress: '3PQwUzCLuAG24xV7Bd6AMWCz4GEXyDix8Dz',
+                timestamp: Date.now(),
+                call: {
+                    function: 'trololo',
+                    args: [ { value: 123, type: 'string' } ]
+                }
+            };
