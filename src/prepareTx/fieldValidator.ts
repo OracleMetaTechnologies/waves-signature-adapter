@@ -307,4 +307,43 @@ const orderType = (options: IFieldOptions) => {
     }
 };
 
+const assetName = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value } = options;
+    
+    if (value != null) {
+        if (typeof value !== 'string') {
+            error(options, ERROR_MSG.WRONG_TYPE);
+        }
+        
+        const bytesLength = getBytesFromString(value).length;
+        
+        if (bytesLength < ASSETS.NAME_MIN_BYTES) {
+            error(options, ERROR_MSG.SMALL_FIELD);
+        }
+        
+        if (bytesLength > ASSETS.NAME_MAX_BYTES) {
+            error(options, ERROR_MSG.LARGE_FIELD);
+        }
+    }
+};
+
+const assetDescription = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value } = options;
+    
+    if (value != null) {
+        if (typeof value !== 'string') {
+            error(options, ERROR_MSG.WRONG_TYPE);
+        }
+        
+        const bytesLength = getBytesFromString(value).length;
+        if (bytesLength > ASSETS.DESCRIPTION_MAX_BYTES) {
+            error(options, ERROR_MSG.LARGE_FIELD);
+        }
+    }
+};
+
 
