@@ -196,3 +196,13 @@ const numberLike = (options: IFieldOptions, min?: string | number, max?: string 
             checkInterval(new BigNumber(value));
     }
 };
+
+const aliasName = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value } = options;
+    
+    if (value == null) {
+        return null;
+    }
+    
