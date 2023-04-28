@@ -63,3 +63,13 @@ const required = (options: IFieldOptions) => {
         error(options, ERROR_MSG.REQUIRED);
     }
 };
+
+const string = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value, optional } = options;
+    
+    if ((!optional && value == null) && (value != null && typeof value !== 'string')) {
+        return error(options, ERROR_MSG.WRONG_TYPE);
+    }
+};
