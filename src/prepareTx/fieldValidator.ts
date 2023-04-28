@@ -206,3 +206,28 @@ const aliasName = (options: IFieldOptions) => {
         return null;
     }
     
+    switch (true) {
+        case typeof value !== 'string':
+            return error(options, ERROR_MSG.WRONG_TYPE);
+        case value.length < ALIAS.MIN_ALIAS_LENGTH:
+            return error(options, ERROR_MSG.SMALL_FIELD);
+        case value.length > ALIAS.MAX_ALIAS_LENGTH:
+            return error(options, ERROR_MSG.LARGE_FIELD);
+        case !(value.split('').every((char: string) => ALIAS.AVAILABLE_CHARS.includes(char))):
+            return error(options, ERROR_MSG.WRONG_SYMBOLS);
+    }
+};
+
+const address = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value } = options;
+    const isValidAddress = (address: string) => {
+        try {
+            return utils.crypto.isValidAddress(address);
+        } catch (e) {
+            return false;
+        }
+    };
+    
+    
