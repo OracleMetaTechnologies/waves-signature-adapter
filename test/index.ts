@@ -7,3 +7,8 @@ import './validators';
 
 const testSeed = 'some test seed words without money on mainnet';
 const seed = new Seed(testSeed);
+
+//@ts-ignore
+const checkCryptoGen = publicKey => (bytes, signature) => {
+    return utils.crypto.isValidSignature(bytes, signature, publicKey);
+};
