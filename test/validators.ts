@@ -216,3 +216,58 @@ describe('Check validators', () => {
             }
         });
     });
+
+        describe('check mass-transfer validations', () => {
+        
+        const data = {
+            amount: Money.fromTokens(1, testAsset),
+            fee: Money.fromTokens(0.0001, testAsset),
+            transfers: [{ amount: '1', recipient: 'test1' }],
+            totalAmount: new Money(1, testAsset),
+            timestamp: Date.now(),
+        };
+        
+        it('valid mass transfer', () => {
+            const signData = {
+                type: SIGN_TYPE.MASS_TRANSFER,
+                data: { ...data }
+            } as any;
+            
+            expect(
+                (() => !!adapter.makeSignable(signData))()
+            ).toBe(true)
+        });
+        
+        it('mass transfer invalid transfers required', () => {
+            const signData = {
+                type: SIGN_TYPE.MASS_TRANSFER,
+                data: { ...data, transfers: null }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('transfers');
+                expect(e[0].message).toEqual(ERROR_MSG.REQUIRED);
+            }
+        });
+        
+        it('mass transfer invalid transfers type', () => {
+            const signData = {
+                type: SIGN_TYPE.MASS_TRANSFER,
+                data: { ...data, transfers: {} }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('transfers');
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+            }
+        });
