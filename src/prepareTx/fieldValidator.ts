@@ -55,3 +55,11 @@ const error = ({ value, ...options }: IFieldOptions, message: string) => {
     const { name: field, type } = options;
     throw { value, field, type, message };
 };
+
+const required = (options: IFieldOptions) => {
+    const { value, optional } = options;
+    
+    if (!optional && value == null) {
+        error(options, ERROR_MSG.REQUIRED);
+    }
+};
