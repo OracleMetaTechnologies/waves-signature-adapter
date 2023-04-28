@@ -14,3 +14,9 @@ const ALIAS = {
 const ADDRESS = {
     MAX_ADDRESS_LENGTH: 45
 };
+
+const ASSETS = {
+    NAME_MIN_BYTES: 4,
+    NAME_MAX_BYTES: 16,
+    DESCRIPTION_MAX_BYTES: 1000,
+};
