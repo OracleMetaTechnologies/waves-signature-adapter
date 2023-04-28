@@ -108,3 +108,76 @@ describe('Check validators', () => {
                 (() => (!!adapter.makeSignable(signData)))()
             ).toBe(true)
         });
+
+                it('valid transfer bytes', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, transfers: [2, 15, 40, 20] }
+            } as any;
+        
+            expect(
+                (() => (!!adapter.makeSignable(signData)))()
+            ).toBe(true)
+        });
+    
+        it('valid transfer UInt8 bytes', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, transfers: new Uint8Array([2, 15, 40, 20]) }
+            } as any;
+        
+            expect(
+                (() => (!!adapter.makeSignable(signData)))()
+            ).toBe(true)
+        });
+        
+        it('invalid transfer amount', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, amount: '' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+                expect(e[0].field).toEqual('amount');
+            }
+        });
+        
+        it('invalid transfer fee', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, fee: '' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+                expect(e[0].field).toEqual('fee');
+            }
+        });
+        
+        it('invalid transfer attachment', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, attachment: {} }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('attachment');
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+            }
+        });
