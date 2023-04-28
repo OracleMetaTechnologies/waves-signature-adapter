@@ -19,3 +19,38 @@ const testAsset = new Asset({
     timestamp: new Date(),
     ticker: undefined
 });
+
+describe('Check validators', () => {
+    
+    let adapter: SeedAdapter;
+    
+    beforeEach(() => {
+        adapter = new SeedAdapter(testSeed);
+    });
+    
+    describe('check order validations', () => {
+        
+        const data = {
+            matcherPublicKey: 'AHLRHBJYtxwqjCcBYnFWeDco8hGJicWYrFd5yM5bWmNh',
+            orderType: 'sell',
+            price: Money.fromTokens('12.22', testAsset),
+            amount: new Money('12.5', testAsset),
+            matcherFee: Money.fromTokens('0.003', testAsset),
+            expiration: Date.now(),
+        };
+        
+        it('valid order', () => {
+            const signData = {
+                type: SIGN_TYPE.CREATE_ORDER,
+                data: { ...data }
+            } as any;
+            
+            expect(
+                (() => {
+                    const signable = adapter.makeSignable(signData);
+                    signable.getDataForApi();
+                    return true;
+                })()
+            ).toBe(true)
+        });
+        
