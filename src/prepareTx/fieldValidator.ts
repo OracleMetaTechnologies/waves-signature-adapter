@@ -382,3 +382,90 @@ const httpsUrl = (options: IFieldOptions) => {
     }
 };
 
+const transfers = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (!Array.isArray(value)) {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    if (!options.optional && value.length === 0) {
+        error(options, ERROR_MSG.REQUIRED);
+    }
+    
+    //@ts-ignore
+    const errors = (value || []).map(({ recipient, amount }, index) => {
+        const dataErrors = [];
+        
+        try {
+            numberLike({ ...options, value: amount, name: `${options.name}:${index}:amount`, optional: false });
+        } catch (e) {
+            dataErrors.push(e);
+        }
+        
+        try {
+            aliasOrAddress({
+                ...options,
+                value: recipient,
+                name: `${options.name}:${index}:recipient`,
+                optional: false
+            });
+        } catch (e) {
+            dataErrors.push(e);
+        }
+        
+        return dataErrors;
+        //@ts-ignore
+    }).filter(item => item.length);
+    
+    if (errors.length) {
+        error(options, errors);
+        error(options, errors);
+    }
+};
+
+const data = (options: IFieldOptions, noKey?: boolean) => {
+    required(options);
+    const { value } = options;
+    if (!Array.isArray(value)) {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    //@ts-ignore
+    const errors = value.map(({ key, type, value }, index) => {
+        if (!noKey) {
+            try {
+                string({ ...options, value: key, name: `${options.name}:${index}:key`, optional: false });
+            } catch (e) {
+                return e;
+            }
+        }
+        const itemOptions = { ...options, name: `${options.name}:${index}:value`, optional: false, value };
+        
+        try {
+            switch (type) {
+                case 'integer':
+                    numberLike(itemOptions);
+                    break;
+                case 'boolean':
+                    boolean(itemOptions);
+                    break;
+                case 'binary':
+                    binary(itemOptions);
+                    break;
+                case 'string':
+                    string(itemOptions);
+                    break;
+                default:
+                    error({ ...options, value: key, name: `${options.name}:${index}:type` }, ERROR_MSG.WRONG_TYPE);
+            }
+        } catch (e) {
+            return e;
+        }
+        //@ts-ignore
+    }).filter(item => item);
+    
+    if (errors.length) {
+        error(options, errors);
+    }
+};
