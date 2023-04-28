@@ -481,3 +481,17 @@ const binary = (options: IFieldOptions) => {
         error(options, ERROR_MSG.BASE64);
     }
 };
+
+const script = (options: IFieldOptions) => {
+    binary(options);
+};
+
+const asset_script = (options: IFieldOptions) => {
+    const { value } = options;
+    
+    if (!value || !value.replace('base64:', '')) {
+        error(options, ERROR_MSG.EMPTY_BASE64);
+    }
+    
+    script(options);
+};
