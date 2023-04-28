@@ -437,3 +437,109 @@ describe('Check validators', () => {
         });
     });
     
+    describe('check data validations', () => {
+        
+        const data = {
+            fee: Money.fromTokens(0.003, testAsset),
+            data: [
+                { key: 'string', value: 'testVal', type: 'string' },
+                { key: 'binary', value: 'base64:AbCd', type: 'binary' },
+                { key: 'integer', value: '20', type: 'integer' },
+                { key: 'boolean', value: false, type: 'boolean' },
+            ],
+        };
+        
+        it('valid data', () => {
+            const signData = {
+                type: SIGN_TYPE.DATA,
+                data: { ...data }
+            } as any;
+            
+            expect(
+                (() => (!!adapter.makeSignable(signData)))()
+            ).toBe(true)
+        });
+        
+        it('invalid data', () => {
+            const signData = {
+                type: SIGN_TYPE.DATA,
+                data: { ...data, data: {} }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+                expect(e[0].field).toEqual('data');
+            }
+        });
+        
+        it('invalid data binary', () => {
+            const signData = {
+                type: SIGN_TYPE.DATA,
+                data: {
+                    ...data, data: [
+                        { key: 'binary', value: 'AbCd', type: 'binary' },
+                    ]
+                }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message[0].message).toEqual(ERROR_MSG.BASE64);
+                expect(e[0].message[0].field).toEqual('data:0:value');
+            }
+        });
+        
+        it('invalid data binary no base64', () => {
+            const signData = {
+                type: SIGN_TYPE.DATA,
+                data: {
+                    ...data, data: [
+                        { key: 'binary', value: 'base64:AbC', type: 'binary' },
+                    ]
+                }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message[0].message).toEqual(ERROR_MSG.BASE64);
+                expect(e[0].message[0].field).toEqual('data:0:value');
+            }
+        });
+        
+        it('invalid data type', () => {
+            const signData = {
+                type: SIGN_TYPE.DATA,
+                data: {
+                    ...data, data: [
+                        { key: 'custom', value: 'base64:AbCd', type: 'custom' },
+                    ]
+                }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData).getBytes().catch(e => {
+                });
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+                expect(e[0].message[0].field).toEqual('data:0:type');
+            }
+        });
+    });
+    
+});
