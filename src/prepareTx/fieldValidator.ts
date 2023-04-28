@@ -245,4 +245,11 @@ const address = (options: IFieldOptions) => {
     }
 };
 
+const aliasOrAddress = (options: IFieldOptions) => {
+    try {
+        aliasName(options);
+    } catch (e) {
+        address(options);
+    }
+};
 
