@@ -271,3 +271,36 @@ describe('Check validators', () => {
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
             }
         });
+
+                    it('mass transfer invalid transfers address and amount', () => {
+            const signData = {
+                type: SIGN_TYPE.MASS_TRANSFER,
+                data: {
+                    ...data, transfers: [
+                        { amount: '', recipient: 'tes' },
+                        { amount: '1', recipient: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' },
+                    ]
+                }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('transfers');
+                
+                expect(e[0].message.length).toEqual(2);
+                expect(e[0].message[0].length).toEqual(2);
+                expect(e[0].message[0][0].field).toEqual('transfers:0:amount');
+                expect(e[0].message[0][0].message).toEqual(ERROR_MSG.WRONG_NUMBER);
+                expect(e[0].message[0][1].field).toEqual('transfers:0:recipient');
+                expect(e[0].message[0][1].message).toEqual(ERROR_MSG.SMALL_FIELD);
+                
+                expect(e[0].message[1].length).toEqual(1);
+                expect(e[0].message[1][0].field).toEqual('transfers:1:recipient');
+                expect(e[0].message[1][0].message).toEqual(ERROR_MSG.WRONG_ADDRESS);
+            }
+        });
+    });
