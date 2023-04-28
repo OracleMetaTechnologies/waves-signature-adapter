@@ -10,3 +10,7 @@ const ALIAS = {
     MAX_ALIAS_LENGTH: 30,
     MIN_ALIAS_LENGTH: 4,
 };
+
+const ADDRESS = {
+    MAX_ADDRESS_LENGTH: 45
+};
