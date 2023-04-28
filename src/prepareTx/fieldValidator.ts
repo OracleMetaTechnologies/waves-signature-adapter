@@ -551,3 +551,39 @@ const payment = (options: IFieldOptions) => {
         error(options, errors);
     }
 };
+
+export const VALIDATORS = {
+    string,
+    number,
+    required,
+    numberLike,
+    money,
+    aliasName,
+    address,
+    boolean,
+    assetId,
+    timestamp,
+    orderType,
+    assetName,
+    assetDescription,
+    httpsUrl,
+    attachment,
+    transfers,
+    aliasOrAddress,
+    data,
+    script,
+    asset_script,
+    binary,
+    precision,
+    call,
+    payment,
+};
+
+
+interface IFieldOptions {
+    key: string;
+    value: any;
+    optional: boolean;
+    type: string;
+    name: string;
+}
