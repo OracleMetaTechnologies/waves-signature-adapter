@@ -47,3 +47,11 @@ const isBase64 = (value: string): boolean => {
 const getBytesFromString = value => {
     return utils.convert.stringToByteArray(value);
 };
+
+//@ts-ignore
+const numberToString = (num) => num && typeof num === 'number' ? num.toString() : num;
+
+const error = ({ value, ...options }: IFieldOptions, message: string) => {
+    const { name: field, type } = options;
+    throw { value, field, type, message };
+};
