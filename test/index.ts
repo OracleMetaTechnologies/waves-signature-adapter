@@ -69,3 +69,17 @@ describe('Create data and signature check', () => {
         beforeEach(() => {
             adapter = new SeedAdapter(testSeed);
         });
+
+                    it('check transfer signature', done => {
+            
+            const data = {
+                amount: Money.fromTokens(1, testAsset),
+                fee: Money.fromTokens(0.0001, testAsset),
+                recipient: 'send2',
+                timestamp: Date.now()
+            };
+            
+            const signable = adapter.makeSignable({
+                type: SIGN_TYPE.TRANSFER,
+                data
+            });
