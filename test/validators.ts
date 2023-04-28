@@ -54,3 +54,19 @@ describe('Check validators', () => {
             ).toBe(true)
         });
         
+        it('invalid order type', () => {
+            const signData = {
+                type: SIGN_TYPE.CREATE_ORDER,
+                data: { ...data, orderType: 'none' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_ORDER_TYPE);
+                expect(e[0].field).toEqual('orderType');
+            }
+        });
