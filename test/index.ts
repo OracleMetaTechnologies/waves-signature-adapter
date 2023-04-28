@@ -47,3 +47,17 @@ describe('Create data and signature check', () => {
                     args: [ { value: 123, type: 'string' } ]
                 }
             };
+
+                        const signable = adapter.makeSignable({
+                type: SIGN_TYPE.SCRIPT_INVOCATION,
+                data
+            });
+    
+            Promise.all([signable.getBytes(), signable.getSignature()])
+                .then(([bytes, signature]) => {
+                    expect(checkCrypto(bytes, signature)).toBe(true);
+                    done();
+                });
+            
+        })
+    });
