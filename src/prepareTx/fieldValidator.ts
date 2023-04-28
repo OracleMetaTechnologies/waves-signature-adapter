@@ -526,3 +526,28 @@ const call = (options: IFieldOptions) => {
     }
 };
 
+const payment = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (typeof value !== 'object' || typeof value.length !== 'number' || !value.forEach) {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    const errors = (value || []).map((amount: any, index: number) => {
+        const dataErrors = [];
+        
+        try {
+            money({ ...options, value: amount, name: `${options.name}:${index}`, optional: false });
+        } catch (e) {
+            dataErrors.push(e);
+        }
+        
+        return dataErrors;
+    }).filter((item: any) => item.length);
+    
+    if (errors.length) {
+        error(options, errors);
+        error(options, errors);
+    }
+};
