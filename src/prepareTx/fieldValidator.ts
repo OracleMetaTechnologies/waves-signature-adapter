@@ -495,3 +495,19 @@ const asset_script = (options: IFieldOptions) => {
     
     script(options);
 };
+
+const call = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    if (!value || typeof value !== 'object') {
+        error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    const functionValue = {
+        key: 'call.function',
+        value: value.function,
+        optional: false,
+        type: 'string',
+        name: 'function'
+    };
+    
