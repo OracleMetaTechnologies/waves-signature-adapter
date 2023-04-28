@@ -346,4 +346,39 @@ const assetDescription = (options: IFieldOptions) => {
     }
 };
 
+const precision = (options: IFieldOptions) => {
+    required(options);
+    numberLike(options, 0, 8);
+};
+
+const httpsUrl = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    const isNotUrl = (url: string) => {
+        try {
+            new URL(url);
+            return false;
+        } catch (e) {
+            return true;
+        }
+    };
+    
+    if (value == null) {
+        return null;
+    }
+    
+    switch (true) {
+        case typeof value !== 'string':
+            error(options, ERROR_MSG.WRONG_TYPE);
+            break;
+        case value.indexOf('https://') === -1:
+            error(options, ERROR_MSG.NOT_HTTPS_URL);
+            break;
+        case isNotUrl(value):
+            error(options, ERROR_MSG.NOT_HTTPS_URL);
+            break;
+        
+    }
+};
 
