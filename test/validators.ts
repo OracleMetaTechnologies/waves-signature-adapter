@@ -70,3 +70,41 @@ describe('Check validators', () => {
                 expect(e[0].field).toEqual('orderType');
             }
         });
+
+                it('invalid order amount', () => {
+            const signData = {
+                type: SIGN_TYPE.CREATE_ORDER,
+                data: { ...data, amount: '10' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(3);
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
+                expect(e[0].field).toEqual('amount');
+            }
+        });
+    });
+    
+    describe('check transfer validations', () => {
+        
+        const data = {
+            amount: Money.fromTokens(1, testAsset),
+            fee: Money.fromTokens(0.0001, testAsset),
+            recipient: 'send2',
+            timestamp: Date.now(),
+        };
+        
+        it('valid transfer', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data }
+            } as any;
+            
+            expect(
+                (() => (!!adapter.makeSignable(signData)))()
+            ).toBe(true)
+        });
