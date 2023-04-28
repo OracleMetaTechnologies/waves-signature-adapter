@@ -148,3 +148,51 @@ const money = (options: IFieldOptions) => {
             return error(options, ERROR_MSG.WRONG_NUMBER);
     }
 };
+
+const numberLike = (options: IFieldOptions, min?: string | number, max?: string | number) => {
+    required(options);
+    const { value } = options;
+    
+    if (value == null) {
+        return;
+    }
+    
+    const checkInterval = (bigNumber: BigNumber) => {
+        if (min != null) {
+            if (bigNumber.lt(new BigNumber(min))) {
+                error(options, ERROR_MSG.SMALL_FIELD);
+            }
+        }
+        
+        if (max != null) {
+            if (bigNumber.gt(new BigNumber(max))) {
+                error(options, ERROR_MSG.LARGE_FIELD);
+            }
+        }
+    };
+    
+    switch (true) {
+        case value instanceof BigNumber:
+            if ((<BigNumber>value).isNaN()) {
+                error(options, ERROR_MSG.WRONG_TYPE);
+            }
+            checkInterval(value);
+            break;
+        case value instanceof Money:
+            
+            const coins = (<Money>value).getCoins();
+            
+            if (coins.isNaN()) {
+                error(options, ERROR_MSG.WRONG_NUMBER);
+            }
+            checkInterval(coins);
+            break;
+        case typeof value === 'string' && !value:
+            error(options, ERROR_MSG.WRONG_NUMBER);
+            break;
+        case new BigNumber(value).isNaN():
+            return error(options, ERROR_MSG.WRONG_NUMBER);
+        default:
+            checkInterval(new BigNumber(value));
+    }
+};
