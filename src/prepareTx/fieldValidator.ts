@@ -230,4 +230,19 @@ const address = (options: IFieldOptions) => {
         }
     };
     
-    
+        if (value == null) {
+        return null;
+    }
+    switch (true) {
+        case typeof value !== 'string':
+            return error(options, ERROR_MSG.WRONG_TYPE);
+        case value.length <= ALIAS.MAX_ALIAS_LENGTH:
+            return error(options, ERROR_MSG.SMALL_FIELD);
+        case value.length > ADDRESS.MAX_ADDRESS_LENGTH:
+            return error(options, ERROR_MSG.LARGE_FIELD);
+        case !isValidAddress(value):
+            return error(options, ERROR_MSG.WRONG_ADDRESS);
+    }
+};
+
+
