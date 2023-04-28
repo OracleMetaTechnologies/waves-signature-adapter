@@ -48,3 +48,8 @@ export enum SIGN_TYPE {
     SET_ASSET_SCRIPT = 15,
     SCRIPT_INVOCATION = 16,
 }
+
+export interface ITypesMap {
+    signatureGenerator: Record<number, ISignatureGeneratorConstructor<any>>;
+    adapter: keyof IAdapterSignMethods;
+}
