@@ -253,3 +253,13 @@ const aliasOrAddress = (options: IFieldOptions) => {
     }
 };
 
+const assetId = (options: IFieldOptions) => {
+    options = { ...options, value: numberToString(options.value) };
+    required(options);
+    const { value } = options;
+    
+    if (value == null) {
+        return null;
+    }
+    
+    
