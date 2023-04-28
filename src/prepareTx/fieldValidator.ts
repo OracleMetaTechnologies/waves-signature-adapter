@@ -262,4 +262,49 @@ const assetId = (options: IFieldOptions) => {
         return null;
     }
     
+        if (typeof value !== 'string') {
+        return error(options, ERROR_MSG.WRONG_TYPE);
+    }
     
+    let isAssetId = false;
+    
+    try {
+        isAssetId = libs.base58.decode(value.trim()).length === 32;
+    } catch (e) {
+        isAssetId = false;
+    }
+    
+    if (!isAssetId && value !== 'WAVES') {
+        return error(options, ERROR_MSG.WRONG_ASSET_ID);
+    }
+};
+
+const timestamp = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (value && !(value instanceof Date || typeof value === 'number' || +value)) {
+        if (typeof value !== 'string' || isNaN(Date.parse(value as string))) {
+            return error(options, ERROR_MSG.WRONG_TIMESTAMP);
+        }
+    }
+};
+
+const orderType = (options: IFieldOptions) => {
+    required(options);
+    const { value } = options;
+    
+    if (value == null) {
+        return null;
+    }
+    
+    if (typeof value !== 'string') {
+        return error(options, ERROR_MSG.WRONG_TYPE);
+    }
+    
+    if (value !== 'sell' && value !== 'buy') {
+        return error(options, ERROR_MSG.WRONG_ORDER_TYPE);
+    }
+};
+
+
