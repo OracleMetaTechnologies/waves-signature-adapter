@@ -198,3 +198,21 @@ describe('Check validators', () => {
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_ADDRESS);
             }
         });
+
+                it('invalid transfer timestamp', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, timestamp: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('timestamp');
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_TIMESTAMP);
+            }
+        });
+    });
