@@ -304,3 +304,68 @@ describe('Check validators', () => {
             }
         });
     });
+
+        describe('check issure validations', () => {
+        
+        const data = {
+            name: 'test',
+            fee: Money.fromTokens(1, testAsset),
+            description: '',
+            quantity: 100000,
+            precision: 7,
+            reissuable: true,
+        };
+        
+        it('issure no script valid', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data }
+            } as any;
+            
+            expect(
+                (() => !!adapter.makeSignable(signData))()
+            ).toBe(true);
+        });
+        
+        it('issure has script valid', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data },
+                script: 'base64:AbCd'
+            } as any;
+            
+            expect(
+                (() => !!adapter.makeSignable(signData))()
+            ).toBe(true);
+        });
+        
+        it('issure invalid name', () => {
+            const signData = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, name: 'P' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('name');
+                expect(e[0].message).toEqual(ERROR_MSG.SMALL_FIELD);
+            }
+            
+            const signData2 = {
+                type: SIGN_TYPE.ISSUE,
+                data: { ...data, name: 'японамама' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData2);
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('name');
+                expect(e[0].message).toEqual(ERROR_MSG.LARGE_FIELD);
+            }
+        });
