@@ -61,3 +61,11 @@ describe('Create data and signature check', () => {
             
         })
     });
+
+        describe('Check signature', () => {
+        
+        let adapter: SeedAdapter;
+        
+        beforeEach(() => {
+            adapter = new SeedAdapter(testSeed);
+        });
