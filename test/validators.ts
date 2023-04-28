@@ -181,3 +181,20 @@ describe('Check validators', () => {
                 expect(e[0].message).toEqual(ERROR_MSG.WRONG_TYPE);
             }
         });
+
+                it('invalid transfer recipient', () => {
+            const signData = {
+                type: SIGN_TYPE.TRANSFER,
+                data: { ...data, recipient: '3Mz9N7YPfZPWGd4yYaX6H53Gcgrq6ifYiH7' }
+            } as any;
+            
+            try {
+                adapter.makeSignable(signData);
+                expect('Fail').toBe('Done');
+            } catch (error) {
+                const e = getError(error);
+                expect(e.length).toEqual(1);
+                expect(e[0].field).toEqual('recipient');
+                expect(e[0].message).toEqual(ERROR_MSG.WRONG_ADDRESS);
+            }
+        });
