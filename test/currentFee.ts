@@ -176,3 +176,101 @@ const TEST_LIST: Array<ITestItem> = [
         smartAssetIdList: undefined,
         fee: new BigNumber(100000000)
     },
+    {
+        data: {
+            type: SIGN_TYPE.REISSUE,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
+                quantity: new BigNumber(500),
+                reissuable: true
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100800000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.BURN,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                amount: new BigNumber(500),
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.BURN,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                amount: new BigNumber(500),
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.BURN,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                amount: new BigNumber(500),
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(900000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.LEASE,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                amount: new BigNumber(500),
+                recipient: seed.address
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.LEASE,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                amount: new BigNumber(500),
+                recipient: seed.address
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.CANCEL_LEASING,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                leaseId: TEST_ASSET.id
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100000)
+    },
