@@ -47,3 +47,23 @@ const keeperMock = {
         }
         return JSON.stringify({ proofs: ['test', 'realProof'] });
     },
+    //@ts-ignore
+    signOrder: async data => {
+    },
+    //@ts-ignore
+    signCancelOrder: async data => {
+    },
+    //@ts-ignore
+    signRequest: async data => {
+    },
+    publicState: async () => ({
+        locked: false,
+        account: {
+            address: '3PCAB4sHXgvtu5NPoen6EXR5yaNbvsEA8Fj',
+            publicKey: '2M25DqL2W4rGFLCFadgATboS8EPqyWAN3DjH12AH5Kdr'
+        }
+    }),
+    //@ts-ignore
+    on: (key: string, cb) => {
+    },
+};
