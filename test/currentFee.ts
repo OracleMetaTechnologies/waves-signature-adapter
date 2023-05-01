@@ -274,3 +274,60 @@ const TEST_LIST: Array<ITestItem> = [
         smartAssetIdList: [TEST_ASSET.id],
         fee: new BigNumber(100000)
     },
+    {
+        data: {
+            type: SIGN_TYPE.CANCEL_LEASING,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                leaseId: TEST_ASSET.id
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.CREATE_ALIAS,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                alias: 'some'
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.CREATE_ALIAS,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                alias: 'some'
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [],
+        fee: new BigNumber(200000)
+    },
