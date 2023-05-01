@@ -638,3 +638,54 @@ interface ITestItem {
 const currentFee = currentFeeFactory(CONFIG);
 
 describe('Current fee list', () => {
+
+    TEST_LIST.forEach((item, index) => {
+
+        const scriptInfo = item.hasScript ? 'with script' : 'without script';
+
+        it(`Test item with type ${item.data.type}, ${scriptInfo}, № ${index + 1}`, done => {
+
+            const signable = new Signable(item.data, new SeedAdapter('dsafsdaf dsa fsdf sa'));
+            signable.getBytes().then((bytes: Uint8Array) => {
+                const fee = currentFee(bytes, item.hasScript, item.smartAssetIdList);
+
+                expect(fee.toFixed()).toBe(item.fee.toFixed());
+                done();
+            });
+
+        });
+
+    });
+
+    describe('Create order', () => {
+
+        const currentOrderFee = currentCreateOrderFactory(CONFIG, new BigNumber(300000));
+
+        it('Simple', () => {
+            const fee = currentOrderFee(ORDER);
+            expect(fee).toEqual(new BigNumber(300000));
+        });
+
+        it('With matcher script', () => {
+            const fee = currentOrderFee(ORDER, true);
+            expect(fee).toEqual(new BigNumber(700000));
+        });
+
+        it('With script and one smart asset', () => {
+            const fee = currentOrderFee(ORDER, true, [TEST_ASSET.id]);
+            expect(fee).toEqual(new BigNumber(1100000));
+        });
+
+        it('Without script and two smart asset', () => {
+            const fee = currentOrderFee(ORDER, false, [ORDER.assetPair.amountAsset, ORDER.assetPair.priceAsset]);
+            expect(fee).toEqual(new BigNumber(1100000));
+        });
+
+        it('With script and two smart asset', () => {
+            const fee = currentOrderFee(ORDER, true, [ORDER.assetPair.amountAsset, ORDER.assetPair.priceAsset]);
+            expect(fee).toEqual(new BigNumber(1500000));
+        });
+
+    });
+
+});
