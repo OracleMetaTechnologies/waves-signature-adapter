@@ -68,3 +68,111 @@ const TEST_ASSET = new Asset({
     timestamp: new Date(),
     ticker: undefined
 });
+
+const TEST_LIST: Array<ITestItem> = [
+    {
+        data: {
+            type: SIGN_TYPE.TRANSFER,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                recipient: seed.address,
+                amount: new Money(1, TEST_ASSET)
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.TRANSFER,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                recipient: seed.address,
+                amount: new Money(1, TEST_ASSET)
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [],
+        fee: new BigNumber(100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.TRANSFER,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                recipient: seed.address,
+                amount: new Money(1, TEST_ASSET)
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(900000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.ISSUE,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, WAVES_ASSET),
+                name: 'My Asset',
+                description: 'My asset description',
+                quantity: new BigNumber(500),
+                precision: 1,
+                reissuable: true
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(100000000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.ISSUE,
+            data: {
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules['3'].fee, WAVES_ASSET),
+                name: 'My Asset',
+                description: 'My asset description',
+                quantity: new BigNumber(500),
+                precision: 1,
+                reissuable: true
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(100400000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.REISSUE,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
+                quantity: new BigNumber(500),
+                reissuable: true
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(100400000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.REISSUE,
+            data: {
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                fee: new Money(CONFIG.calculate_fee_rules['5'].fee, WAVES_ASSET),
+                quantity: new BigNumber(500),
+                reissuable: true
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: undefined,
+        fee: new BigNumber(100000000)
+    },
