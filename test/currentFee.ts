@@ -688,4 +688,4 @@ describe('Current fee list', () => {
 
     });
 
-});
+})
