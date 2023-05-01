@@ -67,3 +67,17 @@ const keeperMock = {
     on: (key: string, cb) => {
     },
 };
+
+
+describe('WavesKeeper adapter test', () => {
+
+    it('Test connect to extension', async () => {
+        WavesKeeperAdapter.setApiExtension(keeperMock);
+        try {
+            const users = await WavesKeeperAdapter.getUserList();
+            const adapter = new WavesKeeperAdapter(users[0]);
+            await adapter.isAvailable();
+        } catch (e) {
+            expect('Fail create adapter').toBe('Done');
+        }
+    });
