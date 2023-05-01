@@ -331,3 +331,81 @@ const TEST_LIST: Array<ITestItem> = [
         smartAssetIdList: [],
         fee: new BigNumber(200000)
     },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(600000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(1000000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [],
+        fee: new BigNumber(200000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(600000)
+    },
