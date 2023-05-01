@@ -127,5 +127,5 @@ describe('WavesKeeper adapter test', () => {
         } catch (e) {
             expect(e).toBe('Done');
         }
-    });
+   });
 });
