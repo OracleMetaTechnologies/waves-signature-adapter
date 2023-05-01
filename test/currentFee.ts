@@ -55,3 +55,16 @@ const WAVES_ASSET = new Asset({
     timestamp: new Date(),
     ticker: 'WAVES'
 });
+
+const TEST_ASSET = new Asset({
+    precision: 5,
+    id: 'Gtb1WRznfchDnTh37ezoDTJ4wcoKaRsKqKjJjy7nm2zU',
+    quantity: new BigNumber(10000),
+    description: 'Some text',
+    height: 100,
+    name: 'Test',
+    reissuable: false,
+    sender: seed.address,
+    timestamp: new Date(),
+    ticker: undefined
+});
