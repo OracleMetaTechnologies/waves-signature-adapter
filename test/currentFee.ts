@@ -598,3 +598,18 @@ const TEST_LIST: Array<ITestItem> = [
         smartAssetIdList: [TEST_ASSET.id],
         fee: new BigNumber(100000000)
     },
+    {
+        data: {
+            type: SIGN_TYPE.SET_ASSET_SCRIPT,
+            data: {
+                fee: new Money(1, WAVES_ASSET),
+                timestamp: Date.now(),
+                assetId: TEST_ASSET.id,
+                script: 'base64:AQa3b8tH'
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100400000)
+    }
+];
