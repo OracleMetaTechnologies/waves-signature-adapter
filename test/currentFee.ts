@@ -627,3 +627,14 @@ const ORDER: IExchangeTransactionOrder<BigNumber> = {
     },
     orderType: 'sell'
 };
+
+interface ITestItem {
+    data: TSignData,
+    hasScript: boolean;
+    smartAssetIdList: Array<string> | undefined;
+    fee: BigNumber;
+}
+
+const currentFee = currentFeeFactory(CONFIG);
+
+describe('Current fee list', () => {
