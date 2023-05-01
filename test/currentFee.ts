@@ -613,3 +613,17 @@ const TEST_LIST: Array<ITestItem> = [
         fee: new BigNumber(100400000)
     }
 ];
+
+const ORDER: IExchangeTransactionOrder<BigNumber> = {
+    amount: new BigNumber(10),
+    price: new BigNumber(5),
+    expiration: Date.now() + 1000 * 60 * 60,
+    timestamp: Date.now(),
+    matcherFee: new BigNumber(300000),
+    matcherPublicKey: '7kPFrHDiGw1rCm7LPszuECwWYL3dMf6iMifLRDJQZMzy',
+    assetPair: {
+        amountAsset: TEST_ASSET.id,
+        priceAsset: 'DWgwcZTMhSvnyYCoWLRUXXSH1RSkzThXLJhww9gwkqdn'
+    },
+    orderType: 'sell'
+};
