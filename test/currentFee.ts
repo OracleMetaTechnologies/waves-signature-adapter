@@ -454,3 +454,107 @@ const TEST_LIST: Array<ITestItem> = [
         smartAssetIdList: [],
         fee: new BigNumber(300000)
     },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(700000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.MASS_TRANSFER,
+            data: {
+                assetId: TEST_ASSET.id,
+                totalAmount: new Money(1, TEST_ASSET),
+                timestamp: Date.now(),
+                fee: new Money(CONFIG.calculate_fee_rules.default.fee, WAVES_ASSET),
+                transfers: [{
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }, {
+                    amount: 1,
+                    recipient: seed.address
+                }]
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(1100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.DATA,
+            data: {
+                fee: new Money(1, WAVES_ASSET),
+                timestamp: Date.now(),
+                data: [
+                    { key: 'test', type: 'string', value: '123' }
+                ]
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(100000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.DATA,
+            data: {
+                fee: new Money(1, WAVES_ASSET),
+                timestamp: Date.now(),
+                data: [
+                    { key: 'test', type: 'string', value: '123' }
+                ]
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(500000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.SET_SCRIPT,
+            data: {
+                fee: new Money(1, WAVES_ASSET),
+                timestamp: Date.now(),
+                script: ''
+            }
+        },
+        hasScript: false,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(1000000)
+    },
+    {
+        data: {
+            type: SIGN_TYPE.SET_SCRIPT,
+            data: {
+                fee: new Money(1, WAVES_ASSET),
+                timestamp: Date.now(),
+                script: ''
+            }
+        },
+        hasScript: true,
+        smartAssetIdList: [TEST_ASSET.id],
+        fee: new BigNumber(1400000)
+    },
